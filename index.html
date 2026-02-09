@@ -368,6 +368,7 @@
         //  Tooltip — event delegation
         // ==========================================
         const tip = document.getElementById('tooltip');
+        let mementoTimer = null;
 
         grid.addEventListener('mouseover', (e) => {
             const sq = e.target;
@@ -381,6 +382,13 @@
             tip.className = sq.classList.contains('father')
                 ? 'tooltip visible memento'
                 : 'tooltip visible';
+
+            clearTimeout(mementoTimer);
+            if (sq.classList.contains('father')) {
+                mementoTimer = setTimeout(() => {
+                    tip.textContent = 'MEMENTO MORI';
+                }, 3000);
+            }
         });
 
         grid.addEventListener('mousemove', (e) => {
@@ -391,6 +399,7 @@
         grid.addEventListener('mouseout', (e) => {
             if (e.target.dataset.i !== undefined) {
                 tip.className = 'tooltip';
+                clearTimeout(mementoTimer);
             }
         });
     })();
