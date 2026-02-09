@@ -13,8 +13,8 @@
         }
 
         html, body {
-            background: #0a0a0a;
-            color: #d4d4d4;
+            background: #0e0d0c;
+            color: #c8c4be;
             font-family: 'Times New Roman', 'Georgia', serif;
             min-height: 100vh;
         }
@@ -27,10 +27,10 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: #0a0a0a;
+            background: #0e0d0c;
             text-align: center;
             padding: 14px 20px 12px;
-            border-bottom: 1px solid #161616;
+            border-bottom: 1px solid #1a1816;
         }
 
         .info-panel h1 {
@@ -53,7 +53,7 @@
         .separator {
             width: 30px;
             height: 1px;
-            background: #2a2a2a;
+            background: #282624;
             margin: 0 auto 10px;
         }
 
@@ -63,12 +63,12 @@
 
         .clock .value {
             font-size: 1rem;
-            color: #c8c8c8;
+            color: #c8c4be;
         }
 
         .clock .unit {
             font-size: 0.6rem;
-            color: #3e3e3e;
+            color: #3a3835;
             margin: 0 8px 0 2px;
             letter-spacing: 0.1em;
         }
@@ -103,33 +103,33 @@
             position: relative;
         }
 
-        /* Lived days — dimmed fill on dark background */
+        /* Lived days — warm halftone gray */
         .day.lived {
-            background: #999;
+            background: #8a8580;
             opacity: 0.6;
         }
 
         .day.lived:hover {
-            background: #ccc;
+            background: #c8c4be;
             opacity: 1;
         }
 
-        /* Remaining days — faint filled ghost */
+        /* Remaining days — faint warm ghost */
         .day.remaining {
-            background: #141414;
+            background: #161514;
         }
 
         .day.remaining:hover {
-            background: #2a2a2a;
+            background: #2a2825;
         }
 
-        /* The day the father died — pitch black void */
+        /* The day the father died — ink black void */
         .day.loss {
-            background: #000000;
+            background: #050403;
         }
 
         .day.loss:hover {
-            background: #000000;
+            background: #050403;
         }
 
         /* Father's life marker — solemn red */
@@ -153,7 +153,7 @@
             text-align: center;
             padding: 0 20px 60px;
             font-size: 0.65rem;
-            color: #444;
+            color: #4a4642;
             letter-spacing: 0.12em;
             line-height: 1.8;
         }
@@ -191,14 +191,14 @@
             display: block;
             text-align: center;
             font-size: 0.6rem;
-            color: #2a2a2a;
+            color: #282624;
             letter-spacing: 0.2em;
             text-decoration: none;
             padding-bottom: 40px;
         }
 
         .colophon:hover {
-            color: #444;
+            color: #4a4642;
         }
 
         /* ============================
@@ -207,8 +207,8 @@
 
         .tooltip {
             position: fixed;
-            background: #141414;
-            color: #999;
+            background: #161514;
+            color: #8a8580;
             padding: 5px 12px;
             border-radius: 2px;
             font-size: 0.72rem;
@@ -218,7 +218,7 @@
             opacity: 0;
             transition: opacity 0.12s ease;
             z-index: 1000;
-            border: 1px solid #222;
+            border: 1px solid #24221f;
             white-space: nowrap;
         }
 
