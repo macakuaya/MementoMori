@@ -102,23 +102,22 @@
             position: relative;
         }
 
-        /* Lived days — light fill on dark background */
+        /* Lived days — dimmed fill on dark background */
         .day.lived {
-            background: #c8c8c8;
+            background: #999;
         }
 
         .day.lived:hover {
-            background: #ffffff;
+            background: #ccc;
         }
 
-        /* Remaining days — subtle outlined ghost */
+        /* Remaining days — faint filled ghost */
         .day.remaining {
-            box-shadow: inset 0 0 0 1px #1c1c1c;
+            background: #141414;
         }
 
         .day.remaining:hover {
-            box-shadow: inset 0 0 0 1px #4a4a4a;
-            background: rgba(255, 255, 255, 0.03);
+            background: #2a2a2a;
         }
 
         /* The day the father died — pitch black void */
