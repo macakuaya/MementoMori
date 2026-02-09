@@ -2,9 +2,9 @@
 
 A single-page visualization of a human lifespan as a grid of days. Each square is one day. The filled ones are spent. The empty ones are not yet yours.
 
-A red square marks the total number of days a father lived. One day the filled squares will reach it and pass it.
+A red square marks the total number of days a father lived. One day the filled squares will reach it and pass it. A black square marks the day he died — a void among the lived days.
 
-A clock ticks in the header, counting every hour, minute, and second since birth.
+A clock ticks in the header, counting every hour, minute, and second since birth. Click it to see the number of days instead.
 
 ## How it works
 
@@ -12,9 +12,11 @@ A clock ticks in the header, counting every hour, minute, and second since birth
 - **Filled squares** — days already lived, counted from the date of birth.
 - **Outlined squares** — days not yet spent.
 - **Red square** — the total number of days a father lived before he died. Hovering shows his age at death.
+- **Black square** — the day the father died, placed in the child's timeline. A pitch-black void among the light.
 - **Last square** — hovering shows the life expectancy of Spain.
-- **Live clock** — total hours, minutes, and seconds since birth, updating every second.
+- **Live clock** — total hours, minutes, and seconds since birth, updating every second. Click to toggle to total days lived.
 - **Tooltips** — hover any square to see the age it represents (e.g. "35 years, 3 months, 7 days").
+- **Footer** — two lines from Alberto Caeiro (Fernando Pessoa). Hover to see the English translation fade in.
 
 ## Running
 
@@ -50,13 +52,19 @@ Opalka spent his entire career painting consecutive numbers from 1 toward infini
 
 Hirst's diamond skull (*For the Love of God*, 2007), his skeleton vitrines, and his *Memento* etchings all engage with mortality as spectacle. Where Hirst makes death beautiful and expensive, this project makes it quiet and numerical — 30,685 tiny squares on a dark screen.
 
+### 物の哀れ — Mono no aware
+
+The Japanese aesthetic concept of 物の哀れ (mono no aware), "the pathos of things," describes the bittersweet awareness of impermanence — the feeling stirred by cherry blossoms falling, by seasons turning, by the knowledge that what is beautiful is beautiful because it does not last. This project is structured around that awareness. Each square fills and cannot unfill. The clock ticks and cannot untick. The grid is moving not because it shows death, but because it shows the passing of things that were alive. Where the Stoics treat mortality as discipline, mono no aware holds it as tenderness.
+
 ### The Stoic tradition
 
 The Latin phrase *memento mori* — "remember that you will die" — was whispered to Roman generals during triumphs to keep them humble. Marcus Aurelius, Seneca, and Epictetus all wrote about meditating on death as a way to live more deliberately. This project is a digital form of that meditation.
 
 ## What makes this one different
 
-The red square. It is not about the viewer's mortality alone — it is about grief embedded in a timeline. A father's entire life, measured in days, placed inside the grid of his child's expected life. The child has not yet lived as many days as the father did. One day they will. That moment is built into the piece, waiting.
+Two markers for the same person. The red square sits ahead in the grid — the father's entire life measured in days, placed inside his child's expected life. The child has not yet lived as many days as the father did. One day they will. That moment is built into the piece, waiting.
+
+The black square sits behind, among the lived days — the day it happened. A hole in the light. Two ways of holding the same loss: one as a destination, one as a memory.
 
 ## License
 

@@ -28,7 +28,7 @@
             z-index: 100;
             background: #0a0a0a;
             text-align: center;
-            padding: 18px 20px 14px;
+            padding: 14px 20px 12px;
             border-bottom: 1px solid #161616;
         }
 
@@ -79,7 +79,7 @@
         .grid-section {
             display: flex;
             justify-content: center;
-            padding: 32px 20px 120px;
+            padding: 0 20px 120px;
         }
 
         .grid {
@@ -121,6 +121,15 @@
             background: rgba(255, 255, 255, 0.03);
         }
 
+        /* The day the father died — pitch black void */
+        .day.loss {
+            background: #000000;
+        }
+
+        .day.loss:hover {
+            background: #000000;
+        }
+
         /* Father's life marker — solemn red */
         .day.father {
             background: #7a1b1b;
@@ -141,22 +150,53 @@
         .poem {
             text-align: center;
             padding: 0 20px 60px;
-            font-size: 0.8rem;
-            color: #555;
-            letter-spacing: 0.15em;
+            font-size: 0.65rem;
+            color: #444;
+            letter-spacing: 0.12em;
             line-height: 1.8;
         }
 
         .poem .separator {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
-        .poem cite {
+        .poem-line {
+            position: relative;
             display: block;
-            margin-top: 10px;
-            font-style: italic;
-            color: #3a3a3a;
-            letter-spacing: 0.1em;
+        }
+
+        .poem-line .pt,
+        .poem-line .en {
+            transition: opacity 0.4s ease;
+        }
+
+        .poem-line .en {
+            position: absolute;
+            left: 0;
+            right: 0;
+            opacity: 0;
+        }
+
+        .poem:hover .poem-line .pt {
+            opacity: 0;
+        }
+
+        .poem:hover .poem-line .en {
+            opacity: 1;
+        }
+
+        .colophon {
+            display: block;
+            text-align: center;
+            font-size: 0.6rem;
+            color: #2a2a2a;
+            letter-spacing: 0.2em;
+            text-decoration: none;
+            padding-bottom: 40px;
+        }
+
+        .colophon:hover {
+            color: #444;
         }
 
         /* ============================
@@ -192,9 +232,6 @@
 <body>
 
     <header class="info-panel">
-        <h1>Memento Mori</h1>
-        <p class="dates" id="dates"></p>
-        <div class="separator"></div>
         <div class="clock" id="clock"></div>
     </header>
 
@@ -204,10 +241,17 @@
 
     <footer class="poem">
         <div class="separator"></div>
-        <p>Tem só duas datas — a da minha nascença e a da minha morte.</p>
-        <p>Entre uma e outra cousa todos os dias são meus.</p>
-        <cite>— Alberto Caeiro</cite>
+        <p class="poem-line">
+            <span class="pt">Tem só duas datas — a da minha nascença e a da minha morte.</span>
+            <span class="en">I have only two dates — that of my birth and that of my death.</span>
+        </p>
+        <p class="poem-line">
+            <span class="pt">Entre uma e outra cousa todos os dias são meus.</span>
+            <span class="en">Between one and the other, all the days are mine.</span>
+        </p>
     </footer>
+
+    <a class="colophon" href="https://github.com/macakuaya/MementoMori#readme" target="_blank">memento mori</a>
 
     <div class="tooltip" id="tooltip"></div>
 
@@ -257,31 +301,39 @@
         // ==========================================
         //  Computed values
         // ==========================================
-        const now        = new Date();
-        const daysLived  = daysBetween(BIRTH, now);
-        const fatherDays = daysBetween(FATHER_BIRTH, FATHER_DEATH);
+        const now          = new Date();
+        const daysLived    = daysBetween(BIRTH, now);
+        const fatherDays   = daysBetween(FATHER_BIRTH, FATHER_DEATH);
+        const lossDay      = daysBetween(BIRTH, FATHER_DEATH); // the day he died, in our timeline
 
         // ==========================================
-        //  Dates display
-        // ==========================================
-        document.getElementById('dates').textContent =
-            `${fmtDate(BIRTH)}  \u2014  ${fmtDate(now)}`;
-
-        // ==========================================
-        //  Live clock — hours, minutes, seconds
+        //  Live clock — hours, minutes, seconds / days
         // ==========================================
         const clockEl = document.getElementById('clock');
+        let showDays = false;
+
+        clockEl.style.cursor = 'pointer';
+        clockEl.addEventListener('click', () => {
+            showDays = !showDays;
+            tick();
+        });
 
         const tick = () => {
             const ms  = Date.now() - BIRTH.getTime();
-            const sec = Math.floor(ms / 1000);
-            const min = Math.floor(sec / 60);
-            const hrs = Math.floor(min / 60);
 
-            clockEl.innerHTML =
-                `<span class="value">${commas(hrs)}</span><span class="unit">hrs</span>` +
-                `<span class="value">${pad(min % 60)}</span><span class="unit">min</span>` +
-                `<span class="value">${pad(sec % 60)}</span><span class="unit">sec</span>`;
+            if (showDays) {
+                const days = Math.floor(ms / 864e5);
+                clockEl.innerHTML =
+                    `<span class="value">${commas(days)}</span><span class="unit">days</span>`;
+            } else {
+                const sec = Math.floor(ms / 1000);
+                const min = Math.floor(sec / 60);
+                const hrs = Math.floor(min / 60);
+                clockEl.innerHTML =
+                    `<span class="value">${commas(hrs)}</span><span class="unit">hrs</span>` +
+                    `<span class="value">${pad(min % 60)}</span><span class="unit">min</span>` +
+                    `<span class="value">${pad(sec % 60)}</span><span class="unit">sec</span>`;
+            }
         };
 
         tick();
@@ -296,7 +348,9 @@
         for (let i = 0; i < TOTAL_DAYS; i++) {
             const el = document.createElement('div');
 
-            if (i === fatherDays) {
+            if (i === lossDay) {
+                el.className = 'day loss';
+            } else if (i === fatherDays) {
                 el.className = 'day father';
             } else if (i < daysLived) {
                 el.className = 'day lived';
