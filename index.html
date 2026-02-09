@@ -28,32 +28,32 @@
             z-index: 100;
             background: #0a0a0a;
             text-align: center;
-            padding: 48px 20px 36px;
+            padding: 18px 20px 14px;
             border-bottom: 1px solid #161616;
         }
 
         .info-panel h1 {
             font-family: 'Times New Roman', serif;
-            font-size: 2.8rem;
+            font-size: 1.6rem;
             font-weight: 400;
             letter-spacing: 0.35em;
             text-transform: uppercase;
             color: #e0e0e0;
-            margin-bottom: 14px;
+            margin-bottom: 6px;
         }
 
         .dates {
-            font-size: 1rem;
+            font-size: 0.8rem;
             color: #555;
             letter-spacing: 0.15em;
-            margin-bottom: 24px;
+            margin-bottom: 10px;
         }
 
         .separator {
-            width: 40px;
+            width: 30px;
             height: 1px;
             background: #2a2a2a;
-            margin: 0 auto 22px;
+            margin: 0 auto 10px;
         }
 
         .clock {
@@ -61,14 +61,14 @@
         }
 
         .clock .value {
-            font-size: 1.3rem;
+            font-size: 1rem;
             color: #c8c8c8;
         }
 
         .clock .unit {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: #3e3e3e;
-            margin: 0 12px 0 3px;
+            margin: 0 8px 0 2px;
             letter-spacing: 0.1em;
         }
 
@@ -134,6 +134,35 @@
            Tooltip
            ============================ */
 
+        /* ============================
+           Footer — Pessoa quote
+           ============================ */
+
+        .poem {
+            text-align: center;
+            padding: 0 20px 60px;
+            font-size: 0.8rem;
+            color: #555;
+            letter-spacing: 0.15em;
+            line-height: 1.8;
+        }
+
+        .poem .separator {
+            margin-bottom: 20px;
+        }
+
+        .poem cite {
+            display: block;
+            margin-top: 10px;
+            font-style: italic;
+            color: #3a3a3a;
+            letter-spacing: 0.1em;
+        }
+
+        /* ============================
+           Tooltip
+           ============================ */
+
         .tooltip {
             position: fixed;
             background: #141414;
@@ -157,8 +186,6 @@
 
         .tooltip.memento {
             color: #c0392b;
-            letter-spacing: 0.25em;
-            font-size: 0.78rem;
         }
     </style>
 </head>
@@ -175,6 +202,13 @@
         <div class="grid" id="grid"></div>
     </section>
 
+    <footer class="poem">
+        <div class="separator"></div>
+        <p>Tem só duas datas — a da minha nascença e a da minha morte.</p>
+        <p>Entre uma e outra cousa todos os dias são meus.</p>
+        <cite>— Alberto Caeiro</cite>
+    </footer>
+
     <div class="tooltip" id="tooltip"></div>
 
     <script>
@@ -183,7 +217,7 @@
         //  Constants
         // ==========================================
         const BIRTH        = new Date(1990, 10, 2);   // 2 November 1990
-        const FATHER_BIRTH = new Date(1958, 5, 25);   // 25 June 1958
+        const FATHER_BIRTH = new Date(1959, 5, 25);   // 25 June 1959
         const FATHER_DEATH = new Date(2001, 11, 6);   // 6 December 2001
         const LIFE_EXP     = 84.01;                    // Spain life expectancy (2024)
         const TOTAL_DAYS   = Math.round(LIFE_EXP * 365.25);
@@ -287,15 +321,12 @@
 
             const idx = +sq.dataset.i;
 
-            if (sq.classList.contains('father')) {
-                tip.textContent = 'MEMENTO MORI';
-                tip.className   = 'tooltip visible memento';
-            } else {
-                tip.textContent = idx === TOTAL_DAYS - 1
-                    ? `Life expectancy in Spain: ${LIFE_EXP} years`
-                    : dayToAge(idx);
-                tip.className = 'tooltip visible';
-            }
+            tip.textContent = idx === TOTAL_DAYS - 1
+                ? `Life expectancy in Spain: ${LIFE_EXP} years`
+                : dayToAge(idx);
+            tip.className = sq.classList.contains('father')
+                ? 'tooltip visible memento'
+                : 'tooltip visible';
         });
 
         grid.addEventListener('mousemove', (e) => {
