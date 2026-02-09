@@ -378,9 +378,7 @@
 
             const idx = +sq.dataset.i;
 
-            tip.textContent = idx === TOTAL_DAYS - 1
-                ? `Life expectancy in Spain: ${LIFE_EXP} years`
-                : dayToAge(idx);
+            tip.textContent = dayToAge(idx);
             tip.className = sq.classList.contains('father')
                 ? 'tooltip visible memento'
                 : 'tooltip visible';
