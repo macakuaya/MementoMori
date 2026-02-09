@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memento Mori</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            background: #0a0a0a;
+            color: #d4d4d4;
+            font-family: 'Times New Roman', 'Georgia', serif;
+            min-height: 100vh;
+        }
+
+        /* ============================
+           FIRST PART — Info Panel
+           ============================ */
+
+        .info-panel {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #0a0a0a;
+            text-align: center;
+            padding: 48px 20px 36px;
+            border-bottom: 1px solid #161616;
+        }
+
+        .info-panel h1 {
+            font-family: 'Times New Roman', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: #e0e0e0;
+            margin-bottom: 14px;
+        }
+
+        .dates {
+            font-size: 1rem;
+            color: #555;
+            letter-spacing: 0.15em;
+            margin-bottom: 24px;
+        }
+
+        .separator {
+            width: 40px;
+            height: 1px;
+            background: #2a2a2a;
+            margin: 0 auto 22px;
+        }
+
+        .clock {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .clock .value {
+            font-size: 1.3rem;
+            color: #c8c8c8;
+        }
+
+        .clock .unit {
+            font-size: 0.7rem;
+            color: #3e3e3e;
+            margin: 0 12px 0 3px;
+            letter-spacing: 0.1em;
+        }
+
+        /* ============================
+           SECOND PART — Day Grid
+           ============================ */
+
+        .grid-section {
+            display: flex;
+            justify-content: center;
+            padding: 32px 20px 120px;
+        }
+
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1px;
+            max-width: 882px; /* ~98 squares per row at 9px pitch */
+        }
+
+        .day {
+            width: 8px;
+            height: 8px;
+            cursor: crosshair;
+            transition: transform 0.12s ease;
+        }
+
+        .day:hover {
+            transform: scale(2.5);
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Lived days — light fill on dark background */
+        .day.lived {
+            background: #c8c8c8;
+        }
+
+        .day.lived:hover {
+            background: #ffffff;
+        }
+
+        /* Remaining days — subtle outlined ghost */
+        .day.remaining {
+            box-shadow: inset 0 0 0 1px #1c1c1c;
+        }
+
+        .day.remaining:hover {
+            box-shadow: inset 0 0 0 1px #4a4a4a;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Father's life marker — solemn red */
+        .day.father {
+            background: #7a1b1b;
+        }
+
+        .day.father:hover {
+            background: #c0392b;
+        }
+
+        /* ============================
+           Tooltip
+           ============================ */
+
+        .tooltip {
+            position: fixed;
+            background: #141414;
+            color: #999;
+            padding: 5px 12px;
+            border-radius: 2px;
+            font-size: 0.72rem;
+            font-family: 'Times New Roman', serif;
+            letter-spacing: 0.08em;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.12s ease;
+            z-index: 1000;
+            border: 1px solid #222;
+            white-space: nowrap;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip.memento {
+            color: #c0392b;
+            letter-spacing: 0.25em;
+            font-size: 0.78rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="info-panel">
+        <h1>Memento Mori</h1>
+        <p class="dates" id="dates"></p>
+        <div class="separator"></div>
+        <div class="clock" id="clock"></div>
+    </header>
+
+    <section class="grid-section">
+        <div class="grid" id="grid"></div>
+    </section>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+    (() => {
+        // ==========================================
+        //  Constants
+        // ==========================================
+        const BIRTH        = new Date(1990, 10, 2);   // 2 November 1990
+        const FATHER_BIRTH = new Date(1958, 5, 25);   // 25 June 1958
+        const FATHER_DEATH = new Date(2001, 11, 6);   // 6 December 2001
+        const LIFE_EXP     = 84.01;                    // Spain life expectancy (2024)
+        const TOTAL_DAYS   = Math.round(LIFE_EXP * 365.25);
+
+        // ==========================================
+        //  Helpers
+        // ==========================================
+        const daysBetween = (a, b) => Math.floor((b - a) / 864e5);
+
+        const dayToAge = (i) => {
+            const d = new Date(BIRTH);
+            d.setDate(d.getDate() + i);
+
+            let y  = d.getFullYear() - BIRTH.getFullYear();
+            let m  = d.getMonth()    - BIRTH.getMonth();
+            let dd = d.getDate()     - BIRTH.getDate();
+
+            if (dd < 0) {
+                m--;
+                dd += new Date(d.getFullYear(), d.getMonth(), 0).getDate();
+            }
+            if (m < 0) {
+                y--;
+                m += 12;
+            }
+
+            return `${y} years, ${m} months, ${dd} days`;
+        };
+
+        const fmtDate = (d) =>
+            `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+
+        const pad = (n) => String(n).padStart(2, '0');
+
+        const commas = (n) => n.toLocaleString('en');
+
+        // ==========================================
+        //  Computed values
+        // ==========================================
+        const now        = new Date();
+        const daysLived  = daysBetween(BIRTH, now);
+        const fatherDays = daysBetween(FATHER_BIRTH, FATHER_DEATH);
+
+        // ==========================================
+        //  Dates display
+        // ==========================================
+        document.getElementById('dates').textContent =
+            `${fmtDate(BIRTH)}  \u2014  ${fmtDate(now)}`;
+
+        // ==========================================
+        //  Live clock — hours, minutes, seconds
+        // ==========================================
+        const clockEl = document.getElementById('clock');
+
+        const tick = () => {
+            const ms  = Date.now() - BIRTH.getTime();
+            const sec = Math.floor(ms / 1000);
+            const min = Math.floor(sec / 60);
+            const hrs = Math.floor(min / 60);
+
+            clockEl.innerHTML =
+                `<span class="value">${commas(hrs)}</span><span class="unit">hrs</span>` +
+                `<span class="value">${pad(min % 60)}</span><span class="unit">min</span>` +
+                `<span class="value">${pad(sec % 60)}</span><span class="unit">sec</span>`;
+        };
+
+        tick();
+        setInterval(tick, 1000);
+
+        // ==========================================
+        //  Grid rendering
+        // ==========================================
+        const grid = document.getElementById('grid');
+        const frag = document.createDocumentFragment();
+
+        for (let i = 0; i < TOTAL_DAYS; i++) {
+            const el = document.createElement('div');
+
+            if (i === fatherDays) {
+                el.className = 'day father';
+            } else if (i < daysLived) {
+                el.className = 'day lived';
+            } else {
+                el.className = 'day remaining';
+            }
+
+            el.dataset.i = i;
+            frag.appendChild(el);
+        }
+
+        grid.appendChild(frag);
+
+        // ==========================================
+        //  Tooltip — event delegation
+        // ==========================================
+        const tip = document.getElementById('tooltip');
+
+        grid.addEventListener('mouseover', (e) => {
+            const sq = e.target;
+            if (!sq.dataset.i) return;
+
+            const idx = +sq.dataset.i;
+
+            if (sq.classList.contains('father')) {
+                tip.textContent = 'MEMENTO MORI';
+                tip.className   = 'tooltip visible memento';
+            } else {
+                tip.textContent = idx === TOTAL_DAYS - 1
+                    ? `Life expectancy in Spain: ${LIFE_EXP} years`
+                    : dayToAge(idx);
+                tip.className = 'tooltip visible';
+            }
+        });
+
+        grid.addEventListener('mousemove', (e) => {
+            tip.style.left = `${e.clientX + 14}px`;
+            tip.style.top  = `${e.clientY - 32}px`;
+        });
+
+        grid.addEventListener('mouseout', (e) => {
+            if (e.target.dataset.i !== undefined) {
+                tip.className = 'tooltip';
+            }
+        });
+    })();
+    </script>
+
+</body>
+</html>
